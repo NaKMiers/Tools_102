@@ -25,7 +25,7 @@ function Creations() {
         </button>
       </DrawerTrigger>
       <DrawerContent>
-        <div className="mx-auto w-full max-w-sm">
+        <div className="mx-auto w-full max-w-md">
           <DrawerHeader>
             <DrawerTitle className="text-center">
               <p className="font-semibold">Tools 102</p>

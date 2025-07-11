@@ -1,6 +1,8 @@
 'use client'
 
+import { useAppDispatch } from '@/hooks/reduxHook'
 import { Prompt } from '@/lib/db'
+import { refresh } from '@/lib/reducers/postingReducer'
 import { cn } from '@/lib/utils'
 import { updatePromptApi } from '@/requests'
 import { LucideLoaderCircle } from 'lucide-react'
@@ -23,10 +25,12 @@ interface UpdatePromptDrawerProps {
   trigger: ReactNode
   className?: string
   prompt: Prompt
-  refresh?: () => void
 }
 
-function UpdatePromptDrawer({ trigger, prompt, refresh, className }: UpdatePromptDrawerProps) {
+function UpdatePromptDrawer({ trigger, prompt, className }: UpdatePromptDrawerProps) {
+  // hooks
+  const dispatch = useAppDispatch()
+
   // form
   const {
     register,
@@ -82,7 +86,7 @@ function UpdatePromptDrawer({ trigger, prompt, refresh, className }: UpdatePromp
         setOpen(false)
         reset()
 
-        if (refresh) refresh()
+        dispatch(refresh())
       } catch (err: any) {
         toast.error('Failed to update prompt', { id: 'update-prompt' })
         console.log(err)
@@ -91,7 +95,7 @@ function UpdatePromptDrawer({ trigger, prompt, refresh, className }: UpdatePromp
         setSaving(false)
       }
     },
-    [handleValidate, refresh, reset, prompt._id]
+    [dispatch, handleValidate, reset, prompt._id]
   )
 
   return (
@@ -102,7 +106,7 @@ function UpdatePromptDrawer({ trigger, prompt, refresh, className }: UpdatePromp
       <DrawerTrigger asChild>{trigger}</DrawerTrigger>
 
       <DrawerContent className={cn(className)}>
-        <div className="px-21-2 mx-auto w-full max-w-sm">
+        <div className="px-21-2 mx-auto w-full max-w-md">
           {/* MARK: Header */}
           <DrawerHeader>
             <DrawerTitle className="text-center">Update Prompt</DrawerTitle>
@@ -113,6 +117,7 @@ function UpdatePromptDrawer({ trigger, prompt, refresh, className }: UpdatePromp
             <CustomInput
               id="content"
               label="Content"
+              type="textarea"
               disabled={saving}
               register={register}
               errors={errors}

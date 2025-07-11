@@ -4,18 +4,42 @@ import { generateObject } from 'ai'
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 
+// [GET]: /posting
+export async function GET(req: NextRequest) {
+  await initDB()
+
+  const pages = db.data.pages || []
+  const prompts = db.data.prompts || []
+  const articles = db.data.articles || []
+
+  return NextResponse.json({ pages, prompts, articles }, { status: 200 })
+}
+
 // [POST]: /posting
 export async function POST(req: NextRequest) {
   const { title, date, desc, content, link, author, thumbnail, promptId, pageId } = await req.json()
   await initDB()
-
-  console.log(promptId, pageId)
 
   const prompt = db.data.prompts.find(p => p._id === promptId)
   if (!prompt) return NextResponse.json({ message: 'Prompt not found' }, { status: 400 })
 
   const page = db.data.pages.find(p => p._id === pageId)
   if (!page) return NextResponse.json({ message: 'Page not found' }, { status: 400 })
+
+  const finalPrompt = `\n
+  [Tiếng Việt]
+  ${prompt.content}
+
+  Title: ${title}
+  Date: ${date}
+  Description: ${desc}
+  Content: ${content}
+  Link: ${link}
+  Auth: ${author}
+  Thumbnail: ${thumbnail}
+
+  Lưu ý: ko dùng dấu "*"
+`
 
   const { object } = await generateObject({
     model: openai('gpt-4o-mini'),
@@ -24,41 +48,39 @@ export async function POST(req: NextRequest) {
       content: z.string(),
       imageUrl: z.string(),
     }),
-    prompt: `\n
-[Tiếng Việt]
-Từ bài viết được cung cấp, hãy đọc nội dung trong link, tiêu đề, mô tả và các thông tin cần thiết để tạo ra 1 bài post facebook page. Bài post phải thật là thu hút, giật tí câu view, luôn luôn kích thích sự tò mò của người lướt qua. Mục tiêu cuối là đưa người xem đến trang https://anpha.shop để mua hàng.
-Lưu ý là không được phải trích nguồn URL, nhưng luôn phải có link của https://anpha.shop để người dùng ấn vào mua hàng.
-
-Title: ${title}
-Date: ${date}
-Description: ${desc}
-Content: ${content}
-Link: ${link}
-Auth: ${author}
-Thumbnail: ${thumbnail}
-
-Lưu ý: ko dùng dấu "*"
-`,
+    prompt: finalPrompt,
   })
 
-  console.log('object', object)
+  return NextResponse.json({ content: object.content, imageUrl: object.imageUrl, success: true })
+  // return NextResponse.json(
+  //   { content: 'This is a placeholder response for POST /posting', imageUrl: thumbnail, success: true },
+  //   { status: 200 }
+  // )
+}
 
-  const facebookAccessToken = process.env.FACEBOOK_PAGE_ACCESS_TOKEN
+// [PUT]: /posting
+export async function PUT(req: NextRequest) {
+  const { content, imageUrl, pageId } = await req.json()
+  await initDB()
+
+  const page = db.data.pages.find(p => p._id === pageId)
+  if (!page) return NextResponse.json({ message: 'Page not found' }, { status: 400 })
+
+  const facebookAccessToken = page.key
   const facebookPageId = process.env.FACEBOOK_PAGE_ID
 
   if (!facebookAccessToken || !facebookPageId) {
     return NextResponse.json({ message: 'Missing Facebook credentials' }, { status: 500 })
   }
 
-  // Gửi request post lên page
   const fbRes = await fetch(`https://graph.facebook.com/v22.0/${facebookPageId}/photos`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      message: object.content,
-      url: object.imageUrl,
+      message: content,
+      url: imageUrl,
       access_token: facebookAccessToken,
     }),
   })
@@ -69,8 +91,6 @@ Lưu ý: ko dùng dấu "*"
     console.error('Facebook Post Failed:', fbData)
     return NextResponse.json({ message: 'Failed to post to Facebook', fbData }, { status: 500 })
   }
-
-  console.log('Posted to Facebook successfully:', fbData)
 
   return NextResponse.json({ success: true })
 }

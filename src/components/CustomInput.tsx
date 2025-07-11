@@ -75,6 +75,7 @@ function CustomInput({
       <div
         className={cn(
           'relative mt-0.5 flex h-9 rounded-lg',
+          type === 'textarea' && 'h-auto',
           errors[id] ? 'border-rose-500' : 'border-dark'
         )}
       >
@@ -150,6 +151,21 @@ function CustomInput({
             disabled={disabled}
             className="h-10 w-full rounded-md border border-gray-300 focus:ring-2 focus:ring-blue-500"
           />
+        ) : type === 'textarea' ? (
+          <textarea
+            id={id}
+            className={cn(
+              'peer block h-full w-full touch-manipulation appearance-none rounded-lg border px-2.5 py-1 text-base focus:ring-0 focus:outline-none md:text-sm',
+              inputClassName,
+              errors[id]?.message ? 'border-rose-500' : 'border-dark'
+            )}
+            disabled={disabled}
+            rows={4}
+            {...register(id, { required })}
+            placeholder=""
+            onChange={onChange}
+            {...rest}
+          />
         ) : (
           <Input
             id={id}
@@ -161,7 +177,6 @@ function CustomInput({
             disabled={disabled}
             type={type === 'password' ? (isShowPassword ? 'text' : 'password') : type}
             {...register(id, { required })}
-            // onWheel={e => e.currentTarget.blur()}
             placeholder=""
             onChange={onChange}
             {...rest}

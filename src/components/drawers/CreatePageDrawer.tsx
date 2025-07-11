@@ -17,14 +17,18 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from '../ui/drawer'
+import { useAppDispatch } from '@/hooks/reduxHook'
+import { refresh } from '@/lib/reducers/postingReducer'
 
 interface CreatePageDrawerProps {
   trigger: ReactNode
   className?: string
-  refresh?: () => void
 }
 
-function CreatePageDrawer({ trigger, refresh, className }: CreatePageDrawerProps) {
+function CreatePageDrawer({ trigger, className }: CreatePageDrawerProps) {
+  // hooks
+  const dispatch = useAppDispatch()
+
   // form
   const {
     register,
@@ -100,7 +104,7 @@ function CreatePageDrawer({ trigger, refresh, className }: CreatePageDrawerProps
         setOpen(false)
         reset()
 
-        if (refresh) refresh()
+        dispatch(refresh())
       } catch (err: any) {
         toast.error('Failed to create page', { id: 'create-page' })
         console.log(err)
@@ -109,7 +113,7 @@ function CreatePageDrawer({ trigger, refresh, className }: CreatePageDrawerProps
         setSaving(false)
       }
     },
-    [handleValidate, reset, refresh]
+    [dispatch, handleValidate, reset]
   )
 
   return (
@@ -120,17 +124,17 @@ function CreatePageDrawer({ trigger, refresh, className }: CreatePageDrawerProps
       <DrawerTrigger asChild>{trigger}</DrawerTrigger>
 
       <DrawerContent className={cn(className)}>
-        <div className="px-21-2 mx-auto w-full max-w-sm">
+        <div className="px-21-2 mx-auto w-full max-w-md">
           {/* MARK: Header */}
           <DrawerHeader>
             <DrawerTitle className="text-center">Create Page</DrawerTitle>
           </DrawerHeader>
 
           <div className="flex flex-col gap-3">
-            {/* MARK: Content */}
+            {/* MARK: Name */}
             <CustomInput
               id="name"
-              label="Content"
+              label="Name"
               disabled={saving}
               register={register}
               errors={errors}

@@ -1,5 +1,7 @@
 'use client'
 
+import { useAppDispatch } from '@/hooks/reduxHook'
+import { refresh } from '@/lib/reducers/postingReducer'
 import { cn } from '@/lib/utils'
 import { createPromptApi } from '@/requests'
 import { LucideLoaderCircle } from 'lucide-react'
@@ -21,10 +23,12 @@ import {
 interface CreatePromptDrawerProps {
   trigger: ReactNode
   className?: string
-  refresh?: () => void
 }
 
-function CreatePromptDrawer({ trigger, refresh, className }: CreatePromptDrawerProps) {
+function CreatePromptDrawer({ trigger, className }: CreatePromptDrawerProps) {
+  // hooks
+  const dispatch = useAppDispatch()
+
   // form
   const {
     register,
@@ -80,7 +84,7 @@ function CreatePromptDrawer({ trigger, refresh, className }: CreatePromptDrawerP
         setOpen(false)
         reset()
 
-        if (refresh) refresh()
+        dispatch(refresh())
       } catch (err: any) {
         toast.error('Failed to create prompt', { id: 'create-prompt' })
         console.log(err)
@@ -89,7 +93,7 @@ function CreatePromptDrawer({ trigger, refresh, className }: CreatePromptDrawerP
         setSaving(false)
       }
     },
-    [handleValidate, refresh, reset]
+    [dispatch, handleValidate, reset]
   )
 
   return (
@@ -100,7 +104,7 @@ function CreatePromptDrawer({ trigger, refresh, className }: CreatePromptDrawerP
       <DrawerTrigger asChild>{trigger}</DrawerTrigger>
 
       <DrawerContent className={cn(className)}>
-        <div className="px-21-2 mx-auto w-full max-w-sm">
+        <div className="px-21-2 mx-auto w-full max-w-md">
           {/* MARK: Header */}
           <DrawerHeader>
             <DrawerTitle className="text-center">Create Prompt</DrawerTitle>
@@ -111,6 +115,7 @@ function CreatePromptDrawer({ trigger, refresh, className }: CreatePromptDrawerP
             <CustomInput
               id="content"
               label="Content"
+              type="textarea"
               disabled={saving}
               register={register}
               errors={errors}

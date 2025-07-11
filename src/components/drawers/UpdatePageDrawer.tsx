@@ -1,6 +1,8 @@
 'use client'
 
+import { useAppDispatch } from '@/hooks/reduxHook'
 import { Page } from '@/lib/db'
+import { refresh } from '@/lib/reducers/postingReducer'
 import { cn } from '@/lib/utils'
 import { updatePageApi } from '@/requests'
 import { LucideLoaderCircle } from 'lucide-react'
@@ -23,10 +25,12 @@ interface UpdatePageDrawerProps {
   trigger: ReactNode
   className?: string
   page: Page
-  refresh?: () => void
 }
 
-function UpdatePageDrawer({ trigger, page, refresh, className }: UpdatePageDrawerProps) {
+function UpdatePageDrawer({ trigger, page, className }: UpdatePageDrawerProps) {
+  // hooks
+  const dispatch = useAppDispatch()
+
   // form
   const {
     register,
@@ -100,9 +104,8 @@ function UpdatePageDrawer({ trigger, page, refresh, className }: UpdatePageDrawe
         await updatePageApi(page._id, data)
         toast.success('Update page successfully!', { id: 'update-page' })
         setOpen(false)
-        reset()
 
-        if (refresh) refresh()
+        dispatch(refresh())
       } catch (err: any) {
         toast.error('Failed to update budget', { id: 'update-page' })
         console.log(err)
@@ -111,7 +114,7 @@ function UpdatePageDrawer({ trigger, page, refresh, className }: UpdatePageDrawe
         setSaving(false)
       }
     },
-    [handleValidate, reset, refresh, page._id]
+    [dispatch, handleValidate, page._id]
   )
 
   return (
@@ -122,7 +125,7 @@ function UpdatePageDrawer({ trigger, page, refresh, className }: UpdatePageDrawe
       <DrawerTrigger asChild>{trigger}</DrawerTrigger>
 
       <DrawerContent className={cn(className)}>
-        <div className="px-21-2 mx-auto w-full max-w-sm">
+        <div className="px-21-2 mx-auto w-full max-w-md">
           {/* MARK: Header */}
           <DrawerHeader>
             <DrawerTitle className="text-center">Update Page</DrawerTitle>

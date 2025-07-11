@@ -8,7 +8,9 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { useAppDispatch } from '@/hooks/reduxHook'
 import { Page } from '@/lib/db'
+import { refresh } from '@/lib/reducers/postingReducer'
 import { copy } from '@/lib/toolsClient'
 import { cn } from '@/lib/utils'
 import { deletePageApi } from '@/requests'
@@ -20,10 +22,13 @@ import UpdatePageDrawer from './drawers/UpdatePageDrawer'
 interface PageCardProps {
   page: Page
   className?: string
-  refresh?: () => void
 }
 
-function PageCard({ page, className, refresh }: PageCardProps) {
+function PageCard({ page, className }: PageCardProps) {
+  // hooks
+  const dispatch = useAppDispatch()
+
+  // states
   const [loading, setLoading] = useState<boolean>(false)
 
   // MARK: delete page
@@ -35,14 +40,14 @@ function PageCard({ page, className, refresh }: PageCardProps) {
       await deletePageApi(page._id)
       toast.success('Deleted page successfully!', { id: 'delete-page' })
 
-      if (refresh) refresh()
+      dispatch(refresh())
     } catch (err: any) {
       toast.error('Failed to delete page', { id: 'delete-page' })
       console.error(err)
     } finally {
       setLoading(false)
     }
-  }, [page._id, refresh])
+  }, [dispatch, page._id])
 
   return (
     <Card
@@ -62,12 +67,12 @@ function PageCard({ page, className, refresh }: PageCardProps) {
             </h3>
             <div className="text-muted-foreground text-sm">
               Key:{' '}
-              <span
-                className="cursor-pointer underline"
+              <p
+                className="cursor-pointer text-ellipsis underline"
                 onClick={() => copy(page.key)}
               >
-                {page.key}
-              </span>
+                {page.key.slice(0, 20) + '...'}
+              </p>
             </div>
           </div>
 
@@ -85,7 +90,6 @@ function PageCard({ page, className, refresh }: PageCardProps) {
             <DropdownMenuContent align="end">
               <UpdatePageDrawer
                 page={page}
-                refresh={refresh}
                 trigger={
                   <Button
                     variant="ghost"
@@ -95,6 +99,7 @@ function PageCard({ page, className, refresh }: PageCardProps) {
                     Edit
                   </Button>
                 }
+                key={new Date().getTime()}
               />
               <DropdownMenuItem
                 className="text-destructive focus:text-destructive h-9"

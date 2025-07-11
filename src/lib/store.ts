@@ -1,10 +1,10 @@
 import { configureStore } from '@reduxjs/toolkit'
-import articleReducer from './reducers/articleReducer'
+import postingReducer from './reducers/postingReducer'
 
 export const makeStore = () => {
   return configureStore({
     reducer: {
-      article: articleReducer,
+      posting: postingReducer,
     },
     devTools: process.env.NODE_ENV !== 'production',
   })

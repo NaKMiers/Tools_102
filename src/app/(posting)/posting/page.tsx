@@ -64,7 +64,6 @@ export default function PostingPage() {
       const res = await fetch(url)
       const data = await res.json()
 
-      console.log('API Response:', data)
       if (data.status !== 'ok') throw new Error(data.message || 'Error fetching data')
       setArticles(data.articles)
     } catch (err: any) {

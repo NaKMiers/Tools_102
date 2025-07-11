@@ -8,7 +8,9 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { useAppDispatch } from '@/hooks/reduxHook'
 import { Prompt } from '@/lib/db'
+import { refresh } from '@/lib/reducers/postingReducer'
 import { copy } from '@/lib/toolsClient'
 import { cn } from '@/lib/utils'
 import { deletePromptApi } from '@/requests'
@@ -20,10 +22,12 @@ import UpdatePromptDrawer from './drawers/UpdatePromptDrawer'
 interface PromptCardProps {
   prompt: Prompt
   className?: string
-  refresh?: () => void
 }
 
-function PromptCard({ prompt, refresh, className }: PromptCardProps) {
+function PromptCard({ prompt, className }: PromptCardProps) {
+  // hooks
+  const dispatch = useAppDispatch()
+
   // states
   const [loading, setLoading] = useState<boolean>(false)
 
@@ -37,7 +41,7 @@ function PromptCard({ prompt, refresh, className }: PromptCardProps) {
       await deletePromptApi(prompt._id)
       toast.success('Update prompt successfully!', { id: 'delete-prompt' })
 
-      if (refresh) refresh()
+      dispatch(refresh())
     } catch (err: any) {
       toast.error('Failed to delete prompt', { id: 'delete-prompt' })
       console.log(err)
@@ -45,7 +49,7 @@ function PromptCard({ prompt, refresh, className }: PromptCardProps) {
       // stop loading
       setLoading(false)
     }
-  }, [refresh, prompt._id])
+  }, [dispatch, prompt._id])
 
   return (
     <Card
@@ -72,7 +76,6 @@ function PromptCard({ prompt, refresh, className }: PromptCardProps) {
             <DropdownMenuContent align="end">
               <UpdatePromptDrawer
                 prompt={prompt}
-                refresh={refresh}
                 trigger={
                   <Button
                     variant="ghost"
@@ -82,6 +85,7 @@ function PromptCard({ prompt, refresh, className }: PromptCardProps) {
                     Edit
                   </Button>
                 }
+                key={new Date().getTime()}
               />
 
               <DropdownMenuItem
