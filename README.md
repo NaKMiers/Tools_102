@@ -1,8 +1,42 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Tools Collection 🛠️
 
-## Getting Started
+A comprehensive web platform that aggregates useful tools built with [Next.js](https://nextjs.org). This project provides a centralized platform to access various tools through a unified interface.
 
-First, run the development server:
+## ✨ Features
+
+- 🎯 Comprehensive collection of useful tools in one website
+- 🎨 Modern and user-friendly interface
+- 📱 Responsive design, compatible with all devices
+- ⚡ High performance with Next.js and React
+- 🔍 Easy tool search and categorization
+
+## 🚀 Getting Started
+
+### System Requirements
+
+- Node.js 18.0 or higher
+- npm, yarn, pnpm, or bun
+
+### Installation
+
+1. Clone the repository:
+
+```bash
+git clone https://github.com/NaKMiers/Tools_102.git
+cd Tools_102
+```
+
+2. Install dependencies:
+
+```bash
+npm install
+# or
+yarn install
+# or
+pnpm install
+```
+
+3. Run the development server:
 
 ```bash
 npm run dev
@@ -14,23 +48,75 @@ pnpm dev
 bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+4. Open [http://localhost:3000](http://localhost:3000) to view the results.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🛠️ Tech Stack
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **Framework**: [Next.js 15](https://nextjs.org/)
+- **Language**: TypeScript
+- **Styling**: CSS Modules / Tailwind CSS
+- **Font**: [Geist](https://vercel.com/font) - optimized font from Vercel
 
-## Learn More
+## 📁 Project Structure
 
-To learn more about Next.js, take a look at the following resources:
+```
+tools/
+├── src/
+│   ├── app/                 # App Router pages
+│   │   ├── layout.tsx       # Root layout
+│   │   ├── page.tsx         # Homepage
+│   │   └── globals.scss     # Global styles
+│   ├── components/          # Reusable components
+│   ├── lib/                 # Utility functions
+│   └── types/               # TypeScript type definitions
+├── public/                  # Static assets
+├── README.md
+└── package.json
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🔧 Scripts
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+npm run dev          # Run development server
+npm run build        # Build for production
+npm run start        # Run production server
+npm run lint         # Check code with ESLint
+```
 
-## Deploy on Vercel
+## 🎯 Roadmap
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- [ ] Add text tools
+- [ ] Color conversion tools
+- [ ] Encoding/decoding tools
+- [ ] API tools and testing
+- [ ] Image and media tools
+- [ ] Developer utilities
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 🤝 Contributing
+
+All contributions are welcome! Please:
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## 📝 License
+
+This project is distributed under the MIT License. See the `LICENSE` file for more details.
+
+## 📞 Contact
+
+- **Author**: NaKMiers
+- **Repository**: [Tools_102](https://github.com/NaKMiers/Tools_102)
+
+## 🚀 Deploy
+
+The website can be easily deployed on:
+
+- [Vercel](https://vercel.com) (recommended)
+- [Netlify](https://netlify.com)
+- [Railway](https://railway.app)
+
+See the [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
