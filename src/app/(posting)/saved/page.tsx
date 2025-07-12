@@ -17,8 +17,6 @@ function SavedPage() {
   const [selectedPages, setSelectedPages] = useState<string[]>([])
   const [openPageFilter, setOpenPageFilter] = useState<boolean>(false)
 
-  console.log('articles', articles)
-
   useEffect(() => {
     setSelectedPages(pages.map(page => page._id))
   }, [pages])

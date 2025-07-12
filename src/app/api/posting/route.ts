@@ -61,8 +61,6 @@ export async function PUT(req: NextRequest) {
   const page = db.data.pages.find(p => p._id === pageId)
   if (!page) return NextResponse.json({ message: 'Page not found' }, { status: 400 })
 
-  console.log('Posting to Facebook:', page)
-
   const facebookAccessToken = page.key
   const facebookPageId = page.pageId
 
