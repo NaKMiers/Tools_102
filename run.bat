@@ -1,6 +1,19 @@
 @echo off
 title Running Next.js App
 
+:: Step 0: Git pull
+where git >nul 2>nul
+if %errorlevel% neq 0 (
+    echo Git is not installed. Please install Git first.
+    start https://git-scm.com/downloads
+    pause
+    exit /b
+)
+
+echo Pulling latest code from Git...
+git pull
+echo Code updated.
+
 :: Step 1: Check NodeJS
 where node >nul 2>nul
 if %errorlevel% neq 0 (
