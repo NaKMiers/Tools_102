@@ -9,8 +9,12 @@ export async function GET() {
 
 // [POST]: /page
 export async function POST(req: NextRequest) {
-  const { name, color, key } = await req.json()
+  const { pageId, name, color, key } = await req.json()
   await initDB()
+
+  if (!pageId || !name || !color || !key) {
+    return NextResponse.json({ success: false, message: 'Missing required fields' }, { status: 400 })
+  }
 
   const now = new Date().toISOString()
 
@@ -18,6 +22,8 @@ export async function POST(req: NextRequest) {
     _id: now,
     createdAt: now,
     updatedAt: now,
+
+    pageId,
     name,
     color,
     key,
@@ -29,13 +35,19 @@ export async function POST(req: NextRequest) {
 
 // [PUT]: /page
 export async function PUT(req: NextRequest) {
-  const { id, name, color, key } = await req.json()
+  const { id, pageId, name, color, key } = await req.json()
   await initDB()
+
+  if (!id || !pageId || !name || !color || !key) {
+    return NextResponse.json({ success: false, message: 'Missing required fields' }, { status: 400 })
+  }
 
   const page = db.data.pages.find(page => page._id === id)
   if (!page) {
     return Response.json({ success: false, message: 'Page not found' }, { status: 404 })
   }
+
+  page.pageId = pageId
   page.name = name
   page.color = color
   page.key = key

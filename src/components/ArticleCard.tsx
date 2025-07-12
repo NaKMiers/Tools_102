@@ -5,7 +5,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { useAppDispatch } from '@/hooks/reduxHook'
+import { useAppDispatch, useAppSelector } from '@/hooks/reduxHook'
 import { Article, Page } from '@/lib/db'
 import { refresh } from '@/lib/reducers/postingReducer'
 import { copy } from '@/lib/toolsClient'
@@ -14,6 +14,7 @@ import { removeSavedArticleApi, saveArticleApi } from '@/requests'
 import { LucideBookmark, LucideCloudUpload, LucideLoaderCircle, LucideX } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { useCallback, useState } from 'react'
 import { toast } from 'sonner'
 import PostToPageModal from './PostToPageModal'
@@ -21,15 +22,21 @@ import PostToPageModal from './PostToPageModal'
 interface ArticleCardProps {
   article: Article
   options: Page[]
-  saved?: boolean
   className?: string
 }
 
-function ArticleCard({ options, article, saved, className }: ArticleCardProps) {
+function ArticleCard({ options, article, className }: ArticleCardProps) {
   // hooks
   const dispatch = useAppDispatch()
+  const router = useRouter()
+
+  // store
+  const savedArticles = useAppSelector(state => state.posting.articles)
 
   // states
+  const [isSaved, setIsSaved] = useState<boolean>(
+    savedArticles.some(saved => saved.link === article.link)
+  )
   const [saving, setSaving] = useState<boolean>(false)
   const [removing, setRemoving] = useState<boolean>(false)
   const [selectedPage, setSelectedPage] = useState<Page | null>(null)
@@ -45,6 +52,7 @@ function ArticleCard({ options, article, saved, className }: ArticleCardProps) {
       try {
         await saveArticleApi(article, optionId)
         toast.success('Save article successfully!', { id: 'save-article' })
+        setIsSaved(true)
 
         dispatch(refresh())
       } catch (err: any) {
@@ -67,6 +75,7 @@ function ArticleCard({ options, article, saved, className }: ArticleCardProps) {
     try {
       await removeSavedArticleApi(article._id)
       toast.success('Remove article successfully!', { id: 'remove-article' })
+      setIsSaved(false)
 
       dispatch(refresh())
     } catch (err: any) {
@@ -76,7 +85,7 @@ function ArticleCard({ options, article, saved, className }: ArticleCardProps) {
       // stop loading
       setRemoving(false)
     }
-  }, [dispatch, article])
+  }, [dispatch, , article])
 
   return (
     <>
@@ -127,7 +136,7 @@ function ArticleCard({ options, article, saved, className }: ArticleCardProps) {
         </CardContent>
         <CardFooter className="flex flex-1 items-end justify-between">
           {/* Save Button */}
-          {saved ? (
+          {isSaved && options.length > 0 ? (
             <div>
               {saving ? (
                 <LucideLoaderCircle className="text-muted-foreground animate-spin" />
@@ -143,20 +152,31 @@ function ArticleCard({ options, article, saved, className }: ArticleCardProps) {
               <DropdownMenuTrigger className="cursor-pointer outline-none">
                 {saving ? (
                   <LucideLoaderCircle className="text-muted-foreground animate-spin" />
+                ) : isSaved ? (
+                  <LucideX className="text-rose-500" />
                 ) : (
                   <LucideBookmark />
                 )}
               </DropdownMenuTrigger>
               <DropdownMenuContent className="cursor-pointer">
-                {options.map(option => (
+                {options.length > 0 ? (
+                  options.map(option => (
+                    <DropdownMenuItem
+                      className="justify-between"
+                      onClick={() => handleSaveArticle(option._id)}
+                      key={option._id}
+                    >
+                      {option.name}
+                    </DropdownMenuItem>
+                  ))
+                ) : (
                   <DropdownMenuItem
                     className="justify-between"
-                    onClick={() => handleSaveArticle(option._id)}
-                    key={option._id}
+                    onClick={() => router.push('/pages')}
                   >
-                    {option.name}
+                    Create page to save
                   </DropdownMenuItem>
-                ))}
+                )}
               </DropdownMenuContent>
             </DropdownMenu>
           )}
@@ -167,18 +187,27 @@ function ArticleCard({ options, article, saved, className }: ArticleCardProps) {
               <LucideCloudUpload />
             </DropdownMenuTrigger>
             <DropdownMenuContent className="cursor-pointer">
-              {options.map(option => (
+              {options.length > 0 ? (
+                options.map(option => (
+                  <DropdownMenuItem
+                    className="justify-between"
+                    onClick={() => {
+                      setSelectedPage(option)
+                      setModalOpen(true)
+                    }}
+                    key={option._id}
+                  >
+                    {option.name}
+                  </DropdownMenuItem>
+                ))
+              ) : (
                 <DropdownMenuItem
                   className="justify-between"
-                  onClick={() => {
-                    setSelectedPage(option)
-                    setModalOpen(true)
-                  }}
-                  key={option._id}
+                  onClick={() => router.push('/pages')}
                 >
-                  {option.name}
+                  Create page to save
                 </DropdownMenuItem>
-              ))}
+              )}
             </DropdownMenuContent>
           </DropdownMenu>
         </CardFooter>

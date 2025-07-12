@@ -155,12 +155,12 @@ function CustomInput({
           <textarea
             id={id}
             className={cn(
-              'peer block h-full w-full touch-manipulation appearance-none rounded-lg border px-2.5 py-1 text-base focus:ring-0 focus:outline-none md:text-sm',
+              'peer bg-input/30 block h-full w-full touch-manipulation appearance-none rounded-lg border px-2.5 py-1 text-sm focus:ring-0 focus:outline-none',
               inputClassName,
               errors[id]?.message ? 'border-rose-500' : 'border-dark'
             )}
             disabled={disabled}
-            rows={4}
+            rows={6}
             {...register(id, { required })}
             placeholder=""
             onChange={onChange}

@@ -1,7 +1,9 @@
 'use client'
 
 import PostingInitProvider from '@/components/providers/PostingInitProvider'
-import Link from 'next/link'
+import Sidebar from '@/components/Sidebar'
+import { Button } from '@/components/ui/button'
+import { LucideMenu } from 'lucide-react'
 import { ReactNode } from 'react'
 
 function PostingLayout({
@@ -11,21 +13,15 @@ function PostingLayout({
 }>) {
   return (
     <PostingInitProvider>
-      <div>
-        {children}
+      {children}
 
-        <div className="fixed bottom-10 left-10 flex flex-col gap-4">
-          {['posting', 'saved', 'prompts', 'pages'].map(route => (
-            <Link
-              href={'/' + route}
-              className="border-primary bg-primary text-secondary rounded-full border-2 px-2.5 py-1.5 text-center text-sm font-semibold capitalize"
-              key={route}
-            >
-              {route}
-            </Link>
-          ))}
-        </div>
-      </div>
+      <Sidebar
+        trigger={
+          <Button className="fixed bottom-[calc(78px)] left-2 z-20 h-10 cursor-pointer rounded-full xl:left-[calc(50%-640px+21px)]">
+            <LucideMenu />
+          </Button>
+        }
+      />
     </PostingInitProvider>
   )
 }

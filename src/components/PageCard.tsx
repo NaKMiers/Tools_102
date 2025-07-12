@@ -58,13 +58,22 @@ function PageCard({ page, className }: PageCardProps) {
     >
       <CardHeader className="pb-2">
         <div className="flex items-start justify-between">
-          <div className="space-y-1">
+          <div className="flex-1 space-y-1">
             <h3
               className="cursor-pointer text-lg font-semibold"
               onClick={() => copy(page.name)}
             >
               {page.name}
             </h3>
+            <div className="text-muted-foreground text-sm">
+              Page ID:{' '}
+              <p
+                className="cursor-pointer underline"
+                onClick={() => copy(page.pageId)}
+              >
+                {page.pageId}
+              </p>
+            </div>
             <div className="text-muted-foreground text-sm">
               Key:{' '}
               <p

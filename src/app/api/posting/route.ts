@@ -27,7 +27,6 @@ export async function POST(req: NextRequest) {
   if (!page) return NextResponse.json({ message: 'Page not found' }, { status: 400 })
 
   const finalPrompt = `\n
-  [Tiếng Việt]
   ${prompt.content}
 
   Title: ${title}
@@ -52,10 +51,6 @@ export async function POST(req: NextRequest) {
   })
 
   return NextResponse.json({ content: object.content, imageUrl: object.imageUrl, success: true })
-  // return NextResponse.json(
-  //   { content: 'This is a placeholder response for POST /posting', imageUrl: thumbnail, success: true },
-  //   { status: 200 }
-  // )
 }
 
 // [PUT]: /posting
@@ -66,8 +61,10 @@ export async function PUT(req: NextRequest) {
   const page = db.data.pages.find(p => p._id === pageId)
   if (!page) return NextResponse.json({ message: 'Page not found' }, { status: 400 })
 
+  console.log('Posting to Facebook:', page)
+
   const facebookAccessToken = page.key
-  const facebookPageId = process.env.FACEBOOK_PAGE_ID
+  const facebookPageId = page.pageId
 
   if (!facebookAccessToken || !facebookPageId) {
     return NextResponse.json({ message: 'Missing Facebook credentials' }, { status: 500 })
@@ -94,25 +91,3 @@ export async function PUT(req: NextRequest) {
 
   return NextResponse.json({ success: true })
 }
-
-/*
-How to get lifeless facebook access token for "user token"
-
-1. copy temporary access token on facebook developer
-
-2. run
-curl -X GET "https://graph.facebook.com/v22.0/oauth/access_token
-?grant_type=fb_exchange_token
-&client_id=3673247972910296
-&client_secret=ae3971562d4ed31b1bcef132f4f5e6ee
-&fb_exchange_token=EAA0MzLCY5NgBPDV4sQJezbGsSsDtp8L99uRdPADmny1Lwp0TXHTil9tQDYkSvaMdeLbutvhxAZCduB4r9WZBZCRghA9TUXa7dhnVbciOgtID2Lrf3W3FtegSbM9J8iTgIWQDGlLVPKEmJMzI72jJGfjofaZBLiVbZCFIvDIcARkcbDLM5wDX0cXRut2YU3cZBRCwh6w0nxYAyqN2b7lKprWHHlZBnqS0FYyftr86QZDZD"
-
--> will receive LONG_LIVED_USER_TOKEN
-
-3. run
-curl -X GET "https://graph.facebook.com/v22.0/me/accounts?access_token=LONG_LIVED_USER_TOKEN"
-
--> will receive LIFELESS_USER_TOKEN
-
-
-*/

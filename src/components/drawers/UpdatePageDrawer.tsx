@@ -44,6 +44,7 @@ function UpdatePageDrawer({ trigger, page, className }: UpdatePageDrawerProps) {
     reset,
   } = useForm<FieldValues>({
     defaultValues: {
+      pageId: page.pageId || '',
       name: page.name || '',
       key: page.key || '',
       color: page.color || '',
@@ -57,6 +58,15 @@ function UpdatePageDrawer({ trigger, page, className }: UpdatePageDrawerProps) {
   const handleValidate: SubmitHandler<FieldValues> = useCallback(
     data => {
       let isValid = true
+
+      // pageId must not be empty
+      if (!data.pageId.trim()) {
+        setError('pageId', {
+          type: 'manual',
+          message: 'Page ID is required',
+        })
+        isValid = false
+      }
 
       // name must not be empty
       if (!data.name.trim()) {
@@ -132,6 +142,17 @@ function UpdatePageDrawer({ trigger, page, className }: UpdatePageDrawerProps) {
           </DrawerHeader>
 
           <div className="flex flex-col gap-3">
+            {/* MARK: Page ID */}
+            <CustomInput
+              id="pageId"
+              label="Page ID"
+              disabled={saving}
+              register={register}
+              errors={errors}
+              onFocus={() => clearErrors('pageId"')}
+              control={control}
+            />
+
             {/* MARK: Name */}
             <CustomInput
               id="name"
@@ -146,6 +167,7 @@ function UpdatePageDrawer({ trigger, page, className }: UpdatePageDrawerProps) {
             {/* MARK: Key */}
             <CustomInput
               id="key"
+              type="textarea"
               label="API Key"
               disabled={saving}
               register={register}

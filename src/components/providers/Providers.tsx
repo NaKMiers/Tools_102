@@ -23,7 +23,7 @@ function Providers({ children }: { children: ReactNode }) {
     >
       <Provider store={storeRef.current}>
         <ThemeInit />
-        <Toaster />
+        <Toaster position="top-center" />
         {/* <ParticlesContainer /> */}
         <NextTopLoader
           color="#F7E360"

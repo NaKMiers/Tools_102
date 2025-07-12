@@ -7,6 +7,7 @@ export type Page = {
   createdAt: string
   updatedAt: string
 
+  pageId: string
   name: string
   color: string
   key: string
@@ -33,7 +34,7 @@ export type Article = {
   author?: string
   thumbnail: string
 
-  page?: Page
+  pageId?: string
 }
 
 type DBData = {

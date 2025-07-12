@@ -1,5 +1,7 @@
 'use client'
 
+import { useAppDispatch } from '@/hooks/reduxHook'
+import { refresh } from '@/lib/reducers/postingReducer'
 import { cn } from '@/lib/utils'
 import { createPageApi } from '@/requests'
 import { LucideLoaderCircle } from 'lucide-react'
@@ -17,8 +19,6 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from '../ui/drawer'
-import { useAppDispatch } from '@/hooks/reduxHook'
-import { refresh } from '@/lib/reducers/postingReducer'
 
 interface CreatePageDrawerProps {
   trigger: ReactNode
@@ -42,6 +42,7 @@ function CreatePageDrawer({ trigger, className }: CreatePageDrawerProps) {
     reset,
   } = useForm<FieldValues>({
     defaultValues: {
+      pageId: '',
       name: '',
       key: '',
       color: '#000000',
@@ -56,11 +57,20 @@ function CreatePageDrawer({ trigger, className }: CreatePageDrawerProps) {
     data => {
       let isValid = true
 
+      // pageId must not be empty
+      if (!data.pageId.trim()) {
+        setError('name', {
+          type: 'manual',
+          message: 'Page ID is required',
+        })
+        isValid = false
+      }
+
       // name must not be empty
       if (!data.name.trim()) {
         setError('name', {
           type: 'manual',
-          message: 'Content is required',
+          message: 'Name is required',
         })
         isValid = false
       }
@@ -88,8 +98,8 @@ function CreatePageDrawer({ trigger, className }: CreatePageDrawerProps) {
     [setError]
   )
 
-  // create budget
-  const handleCreateBudget: SubmitHandler<FieldValues> = useCallback(
+  // create page
+  const handleCreatePage: SubmitHandler<FieldValues> = useCallback(
     async data => {
       // validate form
       if (!handleValidate(data)) return
@@ -131,6 +141,17 @@ function CreatePageDrawer({ trigger, className }: CreatePageDrawerProps) {
           </DrawerHeader>
 
           <div className="flex flex-col gap-3">
+            {/* MARK: Page ID */}
+            <CustomInput
+              id="pageId"
+              label="Page ID"
+              disabled={saving}
+              register={register}
+              errors={errors}
+              onFocus={() => clearErrors('pageId')}
+              control={control}
+            />
+
             {/* MARK: Name */}
             <CustomInput
               id="name"
@@ -145,6 +166,7 @@ function CreatePageDrawer({ trigger, className }: CreatePageDrawerProps) {
             {/* MARK: Key */}
             <CustomInput
               id="key"
+              type="textarea"
               label="API Key"
               disabled={saving}
               register={register}
@@ -185,7 +207,7 @@ function CreatePageDrawer({ trigger, className }: CreatePageDrawerProps) {
                 disabled={saving}
                 variant="default"
                 className="px-21-2 h-10 min-w-[60px] rounded-md text-[13px] font-semibold"
-                onClick={handleSubmit(handleCreateBudget)}
+                onClick={handleSubmit(handleCreatePage)}
               >
                 {saving ? (
                   <LucideLoaderCircle

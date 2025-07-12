@@ -5,6 +5,7 @@ import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { useAppSelector } from '@/hooks/reduxHook'
 import { Article, Page } from '@/lib/db'
+import { cn } from '@/lib/utils'
 import { postPostStep1Api, postPostStep2Api } from '@/requests'
 import { LucideLoaderCircle } from 'lucide-react'
 import Image from 'next/image'
@@ -44,6 +45,7 @@ function PostToPageModal({ open, close, page, article }: PostToPageModalProps) {
 
       setStep(2)
     } catch (err: any) {
+      toast.error('Failed to post', { description: err.message })
       console.log(err)
     } finally {
       // stop loading
@@ -62,6 +64,7 @@ function PostToPageModal({ open, close, page, article }: PostToPageModalProps) {
       // close modal
       close()
     } catch (err: any) {
+      toast.error('Failed to post', { description: err.message })
       console.log(err)
     } finally {
       // stop loading
@@ -74,7 +77,7 @@ function PostToPageModal({ open, close, page, article }: PostToPageModalProps) {
       onOpenChange={close}
     >
       {step === 1 && (
-        <DialogContent className="">
+        <DialogContent>
           <DialogHeader>
             <DialogTitle>
               Post to <span className="text-primary">{page.name}</span>
@@ -125,7 +128,7 @@ function PostToPageModal({ open, close, page, article }: PostToPageModalProps) {
       )}
 
       {step === 2 && data && (
-        <DialogContent className="">
+        <DialogContent>
           <DialogHeader>
             <DialogTitle>
               Post to <span className="text-primary">{page.name}</span>
@@ -133,7 +136,15 @@ function PostToPageModal({ open, close, page, article }: PostToPageModalProps) {
           </DialogHeader>
 
           <div className="max-h-[200px] overflow-y-auto">
-            <p className="whitespace-pre-line">{data.content}</p>
+            <textarea
+              value={data.content}
+              className={cn(
+                'peer bg-input/30 block h-full w-full touch-manipulation appearance-none rounded-lg border px-2.5 py-1 text-sm focus:ring-0 focus:outline-none'
+              )}
+              rows={8}
+              placeholder=""
+              onChange={e => setData({ ...data, content: e.target.value })}
+            />
           </div>
           <div className="aspect-video rounded-xl">
             <Image
