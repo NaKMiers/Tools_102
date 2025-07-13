@@ -11,88 +11,91 @@ const ParticlesContainer = () => {
   const particlesLoaded = useCallback(async (container: Container | undefined) => {}, [])
 
   return (
-    <Particles
-      className="absolute -z-10 h-full w-full translate-z-0"
-      id="tsparticles"
-      init={particlesInit}
-      loaded={particlesLoaded}
-      options={{
-        fullScreen: { enable: false },
-        background: {
-          color: {
-            value: '',
-          },
-        },
-        fpsLimit: 120,
-        interactivity: {
-          events: {
-            onClick: {
-              enable: false,
-              mode: 'push',
+    <>
+      <div className="fixed -z-10 h-screen w-screen backdrop-blur backdrop-opacity-80" />
+      <Particles
+        className="fixed -z-20 h-full w-full translate-z-0"
+        id="tsparticles"
+        init={particlesInit}
+        loaded={particlesLoaded}
+        options={{
+          fullScreen: { enable: false },
+          background: {
+            color: {
+              value: '',
             },
-            onhover: {
+          },
+          fpsLimit: 120,
+          interactivity: {
+            events: {
+              onClick: {
+                enable: false,
+                mode: 'push',
+              },
+              onhover: {
+                enable: true,
+                mode: 'repulse',
+              },
+              resize: true,
+            },
+            modes: {
+              push: {
+                quantity: 90,
+              },
+              repulse: {
+                distance: 150,
+                duration: 0.4,
+              },
+            },
+          },
+          particles: {
+            color: {
+              value: '#f5f5f5',
+            },
+            links: {
+              color: '#eab308',
+              distance: 200,
               enable: true,
-              mode: 'repulse',
+              opacity: 0.5,
+              width: 1,
             },
-            resize: true,
-          },
-          modes: {
-            push: {
-              quantity: 90,
-            },
-            repulse: {
-              distance: 150,
-              duration: 0.4,
-            },
-          },
-        },
-        particles: {
-          color: {
-            value: '#f5f5f5',
-          },
-          links: {
-            color: '#eab308',
-            distance: 200,
-            enable: true,
-            opacity: 0.5,
-            width: 1,
-          },
-          collisions: {
-            enable: true,
-          },
-          move: {
-            direction: 'none',
-            enable: true,
-            outModes: {
-              default: 'bounce',
-            },
-            random: false,
-            speed: 1,
-            straight: false,
-          },
-          number: {
-            density: {
+            collisions: {
               enable: true,
-              area: 800,
             },
-            value: 100,
-          },
-          opacity: {
-            value: 0.5,
-          },
-          shape: {
-            type: 'circle',
-          },
-          size: {
-            value: {
-              min: 1,
-              max: 5,
+            move: {
+              direction: 'none',
+              enable: true,
+              outModes: {
+                default: 'bounce',
+              },
+              random: false,
+              speed: 1,
+              straight: false,
+            },
+            number: {
+              density: {
+                enable: true,
+                area: 800,
+              },
+              value: 100,
+            },
+            opacity: {
+              value: 0.5,
+            },
+            shape: {
+              type: 'circle',
+            },
+            size: {
+              value: {
+                min: 1,
+                max: 5,
+              },
             },
           },
-        },
-        detectRetina: true,
-      }}
-    />
+          detectRetina: true,
+        }}
+      />
+    </>
   )
 }
 

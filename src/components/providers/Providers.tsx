@@ -7,6 +7,7 @@ import { ReactNode, useRef } from 'react'
 import { Provider } from 'react-redux'
 import ThemeInit from '../ThemeInit'
 import { Toaster } from '../ui/sonner'
+import ParticlesContainer from '../backgrounds/ParticlesContainer'
 
 function Providers({ children }: { children: ReactNode }) {
   const storeRef = useRef<AppStore | null>(null)
@@ -24,7 +25,7 @@ function Providers({ children }: { children: ReactNode }) {
       <Provider store={storeRef.current}>
         <ThemeInit />
         <Toaster position="top-center" />
-        {/* <ParticlesContainer /> */}
+        <ParticlesContainer />
         <NextTopLoader
           color="#F7E360"
           initialPosition={0.08}
