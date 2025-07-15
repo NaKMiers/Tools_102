@@ -249,7 +249,7 @@ export default function PostingPage() {
             <ArticleCard
               options={pages}
               article={article}
-              key={index}
+              key={a.url}
             />
           )
         })}
